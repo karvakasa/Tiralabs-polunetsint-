@@ -11,10 +11,6 @@ def start(ctx):
      pty=True)
 
 @task
-def format(ctx):
-    ctx.run("autopep8 --in-place --recursive app", pty=True)
-
-@task
 def test(ctx):
     ctx.run("poetry run python3 -m pytest", pty=True)
 
