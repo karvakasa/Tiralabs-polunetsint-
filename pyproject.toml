@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "pathfinding"
+version = "0.1.0"
+description = "Python project for A* pathfinding on octile grid maps"
+authors = ["Topias T <topias.tallberg@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "pathfinding", from = "app" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pytest = "^8.0"
+invoke = "^3.0.3"
+
+[tool.pytest.ini_options]
+testpaths = ["app/tests"]
+pythonpath = ["app"]
+
+[dependency-groups]
+dev = [
+    "pylint (>=4.0.5,<5.0.0)",
+    "autopep8 (>=2.3.2,<3.0.0)",
+    "coverage (>=7.14.1,<8.0.0)"
+]
