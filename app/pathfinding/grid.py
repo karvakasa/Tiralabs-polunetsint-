@@ -10,7 +10,7 @@ Coord = tuple[int, int]
 
 PASSABLE = {".", "G"}
 BLOCKED = {"@", "O", "T"}
-SQRT2 = sqrt(2)
+sqrt2 = sqrt(2)
 
 
 @dataclass(frozen=True)
@@ -87,7 +87,7 @@ class GridMap:
                 if dx == 0 and dy == 0:
                     continue
                 if self.can_move(coord, (dx, dy)):
-                    cost = SQRT2 if dx != 0 and dy != 0 else 1.0
+                    cost = sqrt2 if dx != 0 and dy != 0 else 1.0
                     x, y = coord
                     found.append(((x + dx, y + dy), cost))
         return found

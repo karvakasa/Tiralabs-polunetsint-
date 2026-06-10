@@ -11,6 +11,7 @@ class SearchResult:
     cost: float
     expanded: int
     visited: set[Coord] = field(default_factory=set)
+    jump_points: set[Coord] = field(default_factory=set)
     runtime_ms: float = 0.0
 
     @property
