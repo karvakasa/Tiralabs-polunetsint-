@@ -4,11 +4,12 @@ import argparse
 from dataclasses import replace
 from math import isinf
 from time import perf_counter
-
+from pathlib import Path
 from pathfinding.astar import astar
+from pathfinding.jps import jps
 from pathfinding.grid import GridMap
 from pathfinding.scenarios import load_scenarios
-from pathfinding.visualize import render_ascii
+from pathfinding.visualize import render_ascii , render_html, render_svg
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -25,9 +26,11 @@ def main(argv: list[str] | None = None) -> int:
     run_parser.add_argument("--scen", help="path to Moving AI .scen file")
     run_parser.add_argument(
         "--case", type=int, help="1-based scenario case number to run")
-    run_parser.add_argument("--algorithm", choices=["astar"], default="astar")
+    run_parser.add_argument("--algorithm", choices=["astar", "jps"], default="astar")
     run_parser.add_argument("--show", action="store_true",
                             help="print ASCII visualization")
+    run_parser.add_argument("--output",
+                            help="write HTML visualization to this path")
 
     subparsers.add_parser(
         "interactive", help="choose route options from prompts")
@@ -53,7 +56,8 @@ def _run(args: argparse.Namespace) -> int:
     grid = GridMap.from_file(args.map)
     start, goal, expected = _route_request(args)
     start_time = perf_counter()
-    result = replace(astar(grid, start, goal), runtime_ms=(
+    algorithm_fn = astar if args.algorithm == "astar" else jps
+    result = replace(algorithm_fn(grid, start, goal), runtime_ms=(
         perf_counter() - start_time) * 1000)
     _print_result(args.algorithm, result)
     if expected is not None:
@@ -62,6 +66,18 @@ def _run(args: argparse.Namespace) -> int:
     if args.show:
         print()
         print(render_ascii(grid, result, start, goal))
+    if args.output:
+        output_path = Path(args.output)
+        visual = (
+            render_html(grid, result, start, goal, algorithm=args.algorithm, expected=expected)
+            if output_path.suffix.lower() in {".html", ".htm"}
+            else render_svg(grid, result, start, goal)
+        )
+        output_path.write_text(visual, encoding="utf-8")
+
+        if args.output == "route.html":
+            print(f"wrote: {args.output}")
+
     return 0 if result.found else 1
 
 
@@ -100,16 +116,24 @@ def _interactive() -> int:
         start = _coord(_prompt("Start coordinate X,Y", default="1,1"))
         goal = _coord(_prompt("Goal coordinate X,Y", default="7,4"))
 
+    print("Algorithm")
+    print("1) A*")
+    print("2) JPS")
+    algorithm_choice = _choice("Choose algorithm", {"1", "2"}, default="1")
+    algorithm = "astar" if algorithm_choice == "1" else "jps"
+
     show = _yes_no("Show ASCII result", default=True)
+    make_html = _yes_no("Create HTML result", default=True)
+    output = "route.html" if make_html else None
     args = argparse.Namespace(
         map=map_path,
         start=start,
         goal=goal,
         scen=scen,
         case=case,
-        algorithm="astar",
+        algorithm=algorithm,
         show=show,
-        output=None,
+        output=output or None,
     )
     return _run(args)
 
@@ -147,4 +171,5 @@ def _print_result(name: str, result) -> None:
     print(f"path_length: {len(result.path)}")
     print(f"expanded: {result.expanded}")
     print(f"visited: {len(result.visited)}")
+    print(f"jump_points: {len(result.jump_points)}")
     print(f"runtime_ms: {result.runtime_ms:.3f}")

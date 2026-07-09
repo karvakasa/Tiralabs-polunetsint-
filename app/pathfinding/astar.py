@@ -13,9 +13,12 @@ from pathfinding.result import Coord, SearchResult
 def astar(grid: GridMap, start: Coord, goal: Coord) -> SearchResult:
 
     # Tarkistetaan, että lähtöpiste on kulkukelpoinen
+
     if not grid.passable(start):
         raise ValueError(f"start is not passable: {start}")
+
     # Tarkistetaan, että tavoitepiste on kulkukelpoinen
+
     if not grid.passable(goal):
         raise ValueError(f"goal is not passable: {goal}")
 

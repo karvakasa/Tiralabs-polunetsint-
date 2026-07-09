@@ -1,6 +1,6 @@
 # Verkot ja polunetsintä
 
-Python-projekti, joka etsii lyhimmän reitin oktili-ruudukoissa A*-algoritmillä ja JPS algoritmillä.
+Python-projekti, joka etsii lyhimmän reitin [oktili-ruudukoissa](https://www.movingai.com/benchmarks/grids.html) A*-algoritmillä ja JPS algoritmillä.
 
 ## Asennus ja testien komentoja
 
@@ -39,6 +39,18 @@ Voit käyttaa myös interactive komentoa:
 
 ```bash
 poetry run invoke interactive
+```
+
+### Aja benchmark (kestää tovin)
+
+300 eri (reitin pituus: 700-1550) reittiä (1024x1024) kartalla
+
+150 eri (reitin pituus: 200-370) reittiä (224x216) kartalla
+
+50 eri (reitin pituus: 1-8) reittiä (6x9) kartalla
+
+```bash
+python3 app/benchmark.py --full
 ```
 
 ## komentorivi CLI
