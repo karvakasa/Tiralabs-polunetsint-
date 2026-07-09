@@ -18,7 +18,7 @@ A* ja JPS sama.
 worst case scenario O(E log V)
 best case scenario O(V)
 
-aikavertailun löydät [benchmark](./Benchmarktuloksia.md)
+aikavertailun löydät [benchmark](./benchmarktuloksia.md)
 
 ## Tyon mahdolliset puutteet ja parannusehdotukset
 
